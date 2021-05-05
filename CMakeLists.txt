@@ -4,4 +4,4 @@ project(tin_long_live_the_king)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_FLAGS "-pthread")
 
-add_executable(tin_long_live_the_king main.cpp)
+add_executable(tin_long_live_the_king src/main.cpp include/Session_ctrl.h src/Session_ctrl.cpp include/Node.h src/Node.cpp)
