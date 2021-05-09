@@ -8,7 +8,7 @@
 #include <mutex>
 #include <fstream>
 
-#define PORT 5000
+#define PORT 6000
 #define LOOPBACK_ADDR "ff02::1"
 #define NONE 0
 #define LEADER 1
