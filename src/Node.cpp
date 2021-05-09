@@ -93,14 +93,15 @@ void *Node::sender(void *arg){
     addr.sin6_family = AF_INET6;
     addr.sin6_port = htons(PORT);
     inet_pton(AF_INET6, LOOPBACK_ADDR, &(addr.sin6_addr));
+    char type_of_message = 'a'; // TODO Mock, in future we will need other types of messages
 
     while(true){
-        char msg[10];
-        sprintf(msg, "%d", id);
+        char msg[20];
+        sprintf(msg, "%02d%d%c", id, role, type_of_message);
         sleep(id + 2);
 
         out_mtx.lock();
-        out<<time(nullptr)<<": node "<<id<<" sent "<<id<<std::endl;
+        out<<time(nullptr)<<": node "<< id <<" sent "<< msg <<std::endl;
         out_mtx.unlock();
 
         if (sendto(sock, msg, sizeof msg, 0, (struct sockaddr *) &addr, sizeof addr) == -1) {
