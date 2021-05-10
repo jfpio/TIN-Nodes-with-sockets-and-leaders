@@ -14,8 +14,8 @@ SessionController::~SessionController(){
     std::stringstream msg;
     for(const auto& node: nodes){
         msg << "node " << node.id << " left";
-        Logger::getInstance().log(msg);
         kill(node.pid, SIGKILL);
+        Logger::getInstance().log(msg);
     }
 }
 
@@ -55,12 +55,11 @@ void SessionController::delete_node(int id, const CommandLineInterface& cli){
     for(int i = 0; i < nodes.size(); i ++){
         if(nodes.at(i).id == id){
             msg << "node " << nodes.at(i).id << " left";
-            Logger::getInstance().log(msg);
 
             kill(nodes.at(i).pid, SIGKILL);
             nodes.erase(nodes.begin() + i);
             deleted = true;
-
+            Logger::getInstance().log(msg);
             break;
         }
     }
