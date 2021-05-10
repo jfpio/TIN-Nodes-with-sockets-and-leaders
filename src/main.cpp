@@ -1,13 +1,13 @@
 #include <iostream>
 #include <fstream>
-#include "../include/Session_ctrl.h"
+#include "../include/SessionController.h"
+
+const std::string LOG_FILE = "log.txt";
 
 int main() {
-    std::ofstream out;
-    out.open(LOG_FILE, std::ofstream::out | std::ofstream::trunc);
-    out.close();
+    Logger::getInstance().setLogFile(LOG_FILE);
+    CommandLineInterface cli;
+    cli.run();
 
-    Session_ctrl session_ctrl;
-    session_ctrl.start();
     return 0;
 }

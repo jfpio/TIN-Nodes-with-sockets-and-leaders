@@ -1,12 +1,4 @@
-#include <iostream>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <mutex>
-#include <thread>
+
 #include "../include/Node.h"
 
 Node::Node(int id){
@@ -16,17 +8,15 @@ Node::Node(int id){
 }
 
 void Node::init(){
-    out.open(LOG_FILE, std::ios_base::app);
-
+    std::stringstream msg;
     sock = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
     if(sock < 0) {
         perror("socket error");
         exit(1);
     }
 
-    out_mtx.lock();
-    out<<time(nullptr)<<": node "<<id<<" joined"<<std::endl;
-    out_mtx.unlock();
+    msg << "node " << id << " joined";
+    Logger::getInstance().log(msg);
 
     int opt;
 
@@ -38,7 +28,7 @@ void Node::init(){
 
     opt = 1;
     if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof (opt)) < 0){
-        perror("setsockopt SO_REUSEADDR error");
+        perror("setsockopt SO_REUSEADDR error");        // throw std::runtime_error ?
         exit(1);
     }
 
@@ -60,7 +50,7 @@ void *Node::receiver(void *arg){
     addr.sin6_addr= IN6ADDR_ANY_INIT;
 
     if (bind(sock, (struct sockaddr *) &addr, sizeof addr) != 0) {
-        perror("bind error");
+        perror("bind error");       // throw std::runtime_error ?
         exit(1);
     }
 
@@ -69,19 +59,20 @@ void *Node::receiver(void *arg){
     mreq.ipv6mr_interface = 0;
 
     if (setsockopt(this->sock, IPPROTO_IPV6, IPV6_ADD_MEMBERSHIP, &mreq, sizeof (mreq)) < 0) {
-        perror("setsockopt IPV6_ADD_MEMBERSHIP error");
+        perror("setsockopt IPV6_ADD_MEMBERSHIP error");     // throw std::runtime_error ?
         exit(1);
     }
 
     char buf[1024];
+    std::stringstream msg;
     while(true){
         if (read(sock, buf, 1024) == -1) {
-            perror("read error");
+            perror("read error");       // throw std::runtime_error ?
             exit(1);
         }
-        out_mtx.lock();
-        out<< time(nullptr)<<": node "<<this->id<<" received: " << buf << std::endl;
-        out_mtx.unlock();
+
+        msg << "node " << this->id << " received: " << buf;
+        Logger::getInstance().log(msg);
 
     }
 }
@@ -95,14 +86,14 @@ void *Node::sender(void *arg){
     inet_pton(AF_INET6, LOOPBACK_ADDR, &(addr.sin6_addr));
     char type_of_message = 'a'; // TODO Mock, in future we will need other types of messages
 
+    std::stringstream log_msg;
     while(true){
         char msg[20];
         sprintf(msg, "%02d%d%c", id, role, type_of_message);
         sleep(id + 2);
 
-        out_mtx.lock();
-        out<<time(nullptr)<<": node "<< id <<" sent "<< msg <<std::endl;
-        out_mtx.unlock();
+        log_msg << "node " << id << " sent " << msg;
+        Logger::getInstance().log(log_msg);
 
         if (sendto(sock, msg, sizeof msg, 0, (struct sockaddr *) &addr, sizeof addr) == -1) {
             perror("sendto error");
