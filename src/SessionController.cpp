@@ -34,8 +34,8 @@ void SessionController::add_node(const CommandLineInterface& cli){
     }
 
     if(c_pid == 0) {
-        Node *new_node = new Node(next_id); // Node new_node(next_id) ?
-        new_node->init();
+        Node new_node(next_id);
+        new_node.init();
     } else{
         struct Node_info new_node_info;
         new_node_info.pid = c_pid;

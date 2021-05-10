@@ -1,6 +1,9 @@
-//
-// Created by Daniel Chmielewiec on 05.05.2021.
-//
+/**
+ * @file SessionController.h
+ * @author Daniel Chmielewiec
+ * @brief contains definition of SessionController class
+ * @date 05-05-2021
+ */
 
 #ifndef TIN_LONG_LIVE_THE_KING_SESSIONCONTROLLER_H
 #define TIN_LONG_LIVE_THE_KING_SESSIONCONTROLLER_H
@@ -13,14 +16,21 @@
 #include "CommandLineInterface.h"
 
 #define MAX_NODES 10
+
 class CommandLineInterface;
+
+/**
+ * @brief keeps information about node
+ */
 struct Node_info{
     pid_t pid;
     int id;
     int role;
 };
 
-/// SINGLETON
+/**
+ * @brief class creates session and provides adding, removing and listing nodes
+ */
 class SessionController{
 private:
     std::vector<Node_info> nodes; // why not use std::map?
@@ -32,9 +42,27 @@ public:
     SessionController(const SessionController&) = delete;
     ~SessionController();
 
+    /**
+     * @brief only way to get access to SessionController object. usage: SessionController::getInstance()
+     * @return SessionController& instance
+     */
     static SessionController& getInstance();
+
+    /**
+     * @return node's information vector
+     */
     const std::vector<Node_info>& getNodes() const;
+
+    /**
+     * method adds new node
+     * @param cli
+     */
     void add_node(const CommandLineInterface& cli);
+
+    /**
+     * method deletes chosen node
+     * @param cli
+     */
     void delete_node(int, const CommandLineInterface& cli);
 };
 
