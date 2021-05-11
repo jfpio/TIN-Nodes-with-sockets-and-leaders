@@ -1,10 +1,10 @@
 
 #include "../include/Node.h"
 
-Node::Node(int id){
+Node::Node(int id, int role){
     this->sock = 0;
     this->id = id;
-    this->role = NONE;
+    this->role = role;
 }
 
 void Node::init(){
@@ -89,7 +89,7 @@ void *Node::sender(void *arg){
     std::stringstream log_msg;
     while(true){
         char msg[20];
-        sprintf(msg, "%02d%d%c", id, role, type_of_message);
+        sprintf(msg, "%d.%d", id, role);
         sleep(id + 2);
 
         log_msg << "node " << id << " sent " << msg;
@@ -100,5 +100,4 @@ void *Node::sender(void *arg){
             exit(1);
         }
     }
-
 }
