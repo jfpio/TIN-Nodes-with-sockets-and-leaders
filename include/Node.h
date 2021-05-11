@@ -34,7 +34,7 @@ private:
     int role;
 
 public:
-    Node(int);
+    Node(int, int);
 
     /**
      * @brief method starting node

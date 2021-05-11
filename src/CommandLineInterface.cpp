@@ -7,7 +7,8 @@
 void CommandLineInterface::run() const
 {
     int choice;
-    int id_to_del;
+    int selected_id;
+    int selected_role;
     do {
         displayOpts();
         std::cin >> choice;
@@ -16,13 +17,20 @@ void CommandLineInterface::run() const
 
         switch(choice){
             case 1:
-                SessionController::getInstance().add_node(*this);
+                std::cout << "Select role" << std::endl;
+                std::cout << "0 NONE" << std::endl;
+                std::cout << "1 LEADER" << std::endl;
+                std::cout << "2 VICE_LEADER" << std::endl;
+                std::cin >> selected_role;
+                std::cin.get();
+
+                SessionController::getInstance().add_node(selected_role, *this);
                 break;
             case 2:
                 std::cout << "Type node's id which you want to delete" << std::endl;
-                std::cin >> id_to_del;
+                std::cin >> selected_id;
                 std::cin.get();
-                SessionController::getInstance().delete_node(id_to_del, *this);
+                SessionController::getInstance().delete_node(selected_id, *this);
                 break;
             case 3:
                 listNodes(SessionController::getInstance().getNodes());

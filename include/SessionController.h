@@ -57,7 +57,7 @@ public:
      * method adds new node
      * @param cli
      */
-    void add_node(const CommandLineInterface& cli);
+    void add_node(int role, const CommandLineInterface& cli);
 
     /**
      * method deletes chosen node

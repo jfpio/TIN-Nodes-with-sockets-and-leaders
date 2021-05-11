@@ -19,9 +19,7 @@ SessionController::~SessionController(){
     }
 }
 
-
-
-void SessionController::add_node(const CommandLineInterface& cli){
+void SessionController::add_node(int role, const CommandLineInterface& cli){
     if(nodes.size() == MAX_NODES) {
         cli.display("Can't add more nodes"); // throw std::logic_error ?
         return;
@@ -34,16 +32,16 @@ void SessionController::add_node(const CommandLineInterface& cli){
     }
 
     if(c_pid == 0) {
-        Node new_node(next_id);
+        Node new_node(next_id, role);
         new_node.init();
     } else{
         struct Node_info new_node_info;
         new_node_info.pid = c_pid;
         new_node_info.id = next_id;
-        new_node_info.role = 0;
+        new_node_info.role = role;
         nodes.push_back(new_node_info);
         std::stringstream msg;
-        msg << "Node with id = " << next_id << " added" << std::endl;
+        msg << "Node with id = " << next_id << " and role " << role << " added" << std::endl;
         cli.display(msg);
         ++next_id;
     }
@@ -72,7 +70,6 @@ void SessionController::delete_node(int id, const CommandLineInterface& cli){
 
     cli.display(msg);
 }
-
 
 const std::vector<Node_info>& SessionController::getNodes() const
 {
