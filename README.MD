@@ -20,3 +20,21 @@ Lua plugin
 2. Capture from any or default internet interface
 3. Filter by 'tin'
 4. Now you have "Tin analyzer" tree with our nodeId, nodeRole and nodeMessage
+
+
+# Tests
+Requires boost library 
+
+1. Installing boost
+```bash
+sudo apt install libboost-all-dev
+```
+
+2. Building tests
+In project main directory
+```bash
+cd cmake-build-debug;
+cmake -D BUILD_TESTS=ON ..;
+make;
+./test/tin_test
+```
