@@ -33,9 +33,9 @@ public:
 
     /**
      * @brief sends given message
-     * @param message
+     * @param message and its size
      */
-    void send(char*);
+    void send(char*, int);
 };
 
 #endif //TIN_LONG_LIVE_THE_KING_SENDER_H

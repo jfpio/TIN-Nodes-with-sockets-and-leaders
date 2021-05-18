@@ -35,9 +35,23 @@ void *Node::rcvr(void* arg){
     std::stringstream msg;
     Receiver receiver(sock, PORT, IN6ADDR_ANY_INIT);
     receiver.init();
-    char buf[1024];
+    char buf[MAX_MSG_SIZE];
+    auto leader_start = std::chrono::steady_clock::now();
+    auto v_leader_start = std::chrono::steady_clock::now();
     while(true) {
-        receiver.receive(buf);
+        receiver.receive(buf, sizeof buf);
+        if(buf[0] = LEADERS_MESSAGE){
+            if(atoi(buf + ROLE_POSITION) == LEADER){       //leader's message received
+                //TODO
+            }else{
+                if(atoi(buf + ROLE_POSITION) == VICE_LEADER){    //vice-leader's message received
+                    //TODO
+                }else {
+                    perror("role in message doesn't exist");
+                    exit(1);
+                }
+            }
+        }
         msg << "node " << id << " received: " << buf;
         Logger::getInstance().log(msg);
     }
@@ -46,14 +60,15 @@ void *Node::rcvr(void* arg){
 void *Node::sndr(void *arg){
     Sender sender(sock, PORT);
     std::stringstream log_msg;
+    char msg[MAX_MSG_SIZE];
+    char type_of_message = LEADERS_MESSAGE; // TODO Mock, in future we will need other types of messages
     while(true) {
         sleep(2);
-        char msg[20];
-        sprintf(msg, "%d.%d", id, role);
-        char type_of_message = 'a'; // TODO Mock, in future we will need other types of messages
-        sender.send(msg);
-        log_msg << "node " << id << " sent " << msg;
-        Logger::getInstance().log(log_msg);
-
+        if(role != NONE){
+            sprintf(msg, "%c %d %d", type_of_message, id, role);
+            sender.send(msg, sizeof msg);
+            log_msg << "node " << id << " sent " << msg;
+            Logger::getInstance().log(log_msg);
+        }
     }
 }

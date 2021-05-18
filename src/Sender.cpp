@@ -9,8 +9,8 @@ Sender::Sender(int sock, int port){
     inet_pton(AF_INET6, LOOPBACK_ADDR, &(this->addr.sin6_addr));
 }
 
-void Sender::send(char* msg){
-    if (sendto(sock, msg, sizeof msg, 0, (struct sockaddr *) &addr, sizeof addr) == -1) {
+void Sender::send(char* msg, int size){
+    if (sendto(sock, msg, size, 0, (struct sockaddr *) &addr, sizeof addr) == -1) {
         perror("sendto error");
         exit(1);
     }

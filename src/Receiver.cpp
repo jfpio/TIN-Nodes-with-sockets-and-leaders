@@ -25,9 +25,14 @@ void Receiver::init(){
     }
 }
 
-void Receiver::receive(char* buf){
-    if(read(sock, buf, 1024) == -1){
+void Receiver::receive(char* buf, int size){
+    int received = read(sock, buf, size);
+    if(received == -1){
         perror("read error");
+        exit(1);
+    }
+    if(received != MAX_MSG_SIZE){
+        perror("wrong message size received");
         exit(1);
     }
 }

@@ -15,6 +15,7 @@
 #include <unistd.h>
 
 #define LOOPBACK_ADDR "ff02::1"
+#define MAX_MSG_SIZE 16
 
 /**
  * @brief class provides receiving and checking messages
@@ -37,9 +38,9 @@ public:
 
     /**
      * @brief method receives and checks single message
-     * @param buffer in which method saves message
+     * @param buffer in which method saves message and its size
      */
-    void receive(char*);
+    void receive(char*, int);
 };
 
 #endif //TIN_LONG_LIVE_THE_KING_RECEIVER_H
