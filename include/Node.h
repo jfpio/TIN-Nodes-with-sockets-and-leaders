@@ -9,17 +9,12 @@
 #define TIN_LONG_LIVE_THE_KING_NODE_H
 
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <string>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <pthread.h>
 #include <thread>
-#include <cstring>
 #include "Logger.h"
+#include "Receiver.h"
+#include "Sender.h"
 
 #define PORT 6000
-#define LOOPBACK_ADDR "ff02::1"
 #define NONE 0
 #define LEADER 1
 #define VICE_LEADER 2
@@ -37,19 +32,19 @@ public:
     Node(int, int);
 
     /**
-     * @brief method starting node
+     * @brief method initializes node
      */
     void init();
 
     /**
-     * @brief method provides receiving messages
+     * @brief method receiving messages in a loop
      */
-    void *receiver(void*);
+    void *rcvr(void*);
 
     /**
-     * @brief method privides sending messages
+     * @brief method sends messages in a loop
      */
-    void *sender(void*);
+    void *sndr(void*);
 };
 
 #endif
