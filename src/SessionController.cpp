@@ -8,6 +8,8 @@
 
 SessionController::SessionController(){
     this->next_id = 0;
+    this->stop = false;
+    this->rcvr_t = std::thread(&SessionController::receiver, this, (void*) nullptr);
 }
 
 SessionController::~SessionController(){
@@ -17,6 +19,8 @@ SessionController::~SessionController(){
         kill(node.pid, SIGKILL);
         Logger::getInstance().log(msg);
     }
+    stop_receiver();
+    rcvr_t.join();
 }
 
 void SessionController::add_node(int role, const CommandLineInterface& cli){
@@ -39,6 +43,7 @@ void SessionController::add_node(int role, const CommandLineInterface& cli){
         new_node_info.pid = c_pid;
         new_node_info.id = next_id;
         new_node_info.role = role;
+        std::lock_guard guard(nodes_mutex);
         nodes.push_back(new_node_info);
         std::stringstream msg;
         msg << "Node with id = " << next_id << " and role " << role << " added" << std::endl;
@@ -48,26 +53,20 @@ void SessionController::add_node(int role, const CommandLineInterface& cli){
 }
 
 void SessionController::delete_node(int id, const CommandLineInterface& cli){
-    bool deleted = false;
     std::stringstream msg;
+    std::lock_guard guard(nodes_mutex);
     for(int i = 0; i < nodes.size(); i ++){
         if(nodes.at(i).id == id){
             msg << "node " << nodes.at(i).id << " left";
-
             kill(nodes.at(i).pid, SIGKILL);
             nodes.erase(nodes.begin() + i);
-            deleted = true;
             Logger::getInstance().log(msg);
-            break;
+            msg << "Node deleted";
+            cli.display(msg);
+            return;
         }
     }
-    msg.str(std::string(""));
-
-    if(deleted)
-        msg << "Node deleted";
-    else
-        msg << "There is not a node with id = " << id;
-
+    msg << "There is not a node with id = " << id;
     cli.display(msg);
 }
 
@@ -79,4 +78,46 @@ const std::vector<Node_info>& SessionController::getNodes() const
 SessionController& SessionController::getInstance() {
     static SessionController instance;
     return instance;
+}
+
+void* SessionController::receiver(void* arg){
+    sock = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
+    if(sock < 0) {
+        perror("socket error");
+        exit(1);
+    }
+
+    int opt = 1;
+    if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof (opt)) < 0){
+        perror("setsockopt SO_REUSEADDR error");        // throw std::runtime_error ?
+        exit(1);
+    }
+
+    Receiver receiver(sock, PORT, IN6ADDR_ANY_INIT);
+    receiver.init();
+    char buf[MAX_MSG_SIZE];
+
+    while(!stop){
+        receiver.receive(buf, sizeof buf);
+        if(buf[0] == LEADERS_MESSAGE){
+            setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
+        }
+    }
+}
+
+void SessionController::stop_receiver(){
+    Sender sender(sock, PORT);
+    char msg[MAX_MSG_SIZE];
+
+    stop = true;
+    msg[0] = 'q';
+    sender.send(msg, sizeof msg);
+}
+
+void SessionController::setRole(int id, int role){
+    for(int i = 0; i < nodes.size(); i++){
+        if(nodes.at(i).id == id){
+            nodes.at(i).role = role;
+        }
+    }
 }

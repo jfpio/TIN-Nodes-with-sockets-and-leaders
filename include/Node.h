@@ -19,7 +19,8 @@
 #define MAX_WAITING_TIME 3000      //3 seconds for debugging purposes, in future 0.1 s
 #define LEADERS_MESSAGE 'a'
 #define ID_MESSAGE 'b'
-#define ROLE_POSITION 2
+#define ID_POSITION 2
+#define ROLE_POSITION 4
 #define NONE 0
 #define LEADER 1
 #define VICE_LEADER 2

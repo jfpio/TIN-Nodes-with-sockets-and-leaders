@@ -35,6 +35,10 @@ class SessionController{
 private:
     std::vector<Node_info> nodes; // why not use std::map?
     int next_id; // factory?
+    std::thread rcvr_t;
+    mutable std::mutex nodes_mutex;
+    bool stop;
+    int sock;
 
     SessionController();
 public:
@@ -54,16 +58,32 @@ public:
     const std::vector<Node_info>& getNodes() const;
 
     /**
-     * method adds new node
+     * @brief method adds new node
      * @param cli
      */
     void add_node(int role, const CommandLineInterface& cli);
 
     /**
-     * method deletes chosen node
+     * @brief method deletes chosen node
      * @param cli
      */
     void delete_node(int, const CommandLineInterface& cli);
+
+    /**
+     * @brief method receives messages in a loop
+     */
+    void* receiver(void*);
+
+    /**
+     * @brief method stops receiver
+     */
+    void stop_receiver();
+
+    /**
+     * @brief method updates role
+     * @param id and role to set
+     */
+    void setRole(int, int);
 };
 
 #endif

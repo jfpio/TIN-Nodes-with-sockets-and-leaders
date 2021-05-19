@@ -66,8 +66,6 @@ void *Node::receiver(void* arg){
     Receiver receiver(sock, PORT, IN6ADDR_ANY_INIT);
     receiver.init();
     char buf[MAX_MSG_SIZE];
-    auto leader_start = std::chrono::steady_clock::now();
-    auto v_leader_start = std::chrono::steady_clock::now();
     while(true) {
         receiver.receive(buf, sizeof buf);
         if(buf[0] == LEADERS_MESSAGE){
@@ -103,25 +101,28 @@ void *Node::sender(void *arg){
         sleep(1);
         if(role != NONE){                               //if I have role - sending LEADERS_MESSAGE with role
             msg_type = LEADERS_MESSAGE;
-            sprintf(msg, "%c %d", msg_type, role);
+            sprintf(msg, "%c %d %d", msg_type, id,  role);
             sender.send(msg, sizeof msg);
             log_msg << "node " << id << " sent " << msg;
             Logger::getInstance().log(log_msg);
         }
+
+        leader_absent = is_leader_absent();
+        v_leader_absent = is_v_leader_absent();
+
         if(leader_absent && role == VICE_LEADER) {      //if leader absent and I am a vice-leader - I become a leader
             role = LEADER;
-            log_msg <<"node" << id << " is now leader" << msg;
+            log_msg <<"node " << id << " is now leader";
             Logger::getInstance().log(log_msg);
         }
         if(v_leader_absent && role != LEADER){          //if vice-leader absent and I am not a leader - sending ID_MESSAGE
             msg_type = ID_MESSAGE;
             sprintf(msg, "%c %d", msg_type, id);
             sender.send(msg, sizeof msg);
-            log_msg <<"node" << id << " sent " << msg;
+            log_msg <<"node " << id << " sent " << msg;
             Logger::getInstance().log(log_msg);
         }
-        leader_absent = is_leader_absent();
-        v_leader_absent = is_v_leader_absent();
+
     }
 }
 
