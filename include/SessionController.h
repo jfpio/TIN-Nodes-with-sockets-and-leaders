@@ -77,7 +77,7 @@ public:
     /**
      * @brief method stops receiver
      */
-    void stop_receiver();
+    void stop_receiver() const;
 
     /**
      * @brief method updates role

@@ -38,6 +38,7 @@ void SessionController::add_node(int role){
     if(c_pid == 0) {
         Node new_node(next_id, role);
         new_node.init();
+        exit(0);
     } else{
         struct Node_info new_node_info;
         new_node_info.pid = c_pid;
@@ -108,16 +109,17 @@ void* SessionController::receiver(void* arg){
             setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
         } else if (atoi(buf + MSG_TYPE_POSITION) == ID_MESSAGE) {
             setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
+        } else if (atoi(buf + MSG_TYPE_POSITION) == SESSION_CONTROLLER_KILL_MSG && atoi(buf + ID_POSITION) == -1) {
+            stop = true;
         }
     }
 }
 
-void SessionController::stop_receiver(){
+void SessionController::stop_receiver() const{
     Sender sender(sock, PORT);
     char msg[MAX_MSG_SIZE];
 
-    stop = true;
-    msg[0] = 'q';
+    sprintf(msg, "%d %d", SESSION_CONTROLLER_KILL_MSG, -1);
     sender.send(msg, sizeof msg);
 }
 
