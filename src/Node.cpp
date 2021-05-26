@@ -5,6 +5,7 @@ Node::Node(int id, int role){
     this->id = id;
     this->role = role;
     this->new_vleader = false;
+    this->should_node_die = false;
     clock_gettime(CLOCK_REALTIME, &last_leader_msg_time);
     clock_gettime(CLOCK_REALTIME, &last_vleader_msg_time);
     clock_gettime(CLOCK_REALTIME, &first_id_msg_time);
@@ -68,17 +69,30 @@ void *Node::receiver(void* arg){
     Receiver receiver(sock, PORT, IN6ADDR_ANY_INIT);
     receiver.init();
 
-    while(true) {
+    while(!should_node_die) {
         receiver.receive(buf, sizeof buf);
         switch(atoi(buf + MSG_TYPE_POSITION)){
             case LEADERS_MESSAGE:
                 if(atoi(buf + ROLE_POSITION) == LEADER){                //leader's message received
-                    std::lock_guard guard(l_mutex);
-                    clock_gettime(CLOCK_REALTIME, &last_leader_msg_time);
+                    if (role == LEADER && atoi(buf + ID_POSITION) != id) {          //if i am a leader and got leader msg from another node
+                        role = NONE;
+                        msg << "node " << id << " informs there is more than one leader!";
+                        Logger::getInstance().log(msg);
+                    } else {
+                        std::lock_guard guard(l_mutex);
+                        clock_gettime(CLOCK_REALTIME, &last_leader_msg_time);
+                    }
+
                 }else{
                     if(atoi(buf + ROLE_POSITION) == VICE_LEADER){       //vice-leader's message received
-                        std::lock_guard guard(vl_mutex);
-                        clock_gettime(CLOCK_REALTIME, &last_vleader_msg_time);
+                        if (role == VICE_LEADER && atoi(buf + ID_POSITION) != id) { // if i am a leader and got leader msg from another node
+                            role = NONE;
+                            msg << "node " << id << " informs there is more than one vice-leader!";
+                            Logger::getInstance().log(msg);
+                        } else {
+                            std::lock_guard guard(vl_mutex);
+                            clock_gettime(CLOCK_REALTIME, &last_vleader_msg_time);
+                        }
                     }else{
                         perror("unknown role in message");
                         exit(1);
@@ -98,10 +112,17 @@ void *Node::receiver(void* arg){
                     new_vleader = false;
                 }
                 break;
+
+            case SESSION_CONTROLLER_KILL_MSG:
+                if (atoi(buf + ID_POSITION) == id) {
+                    should_node_die = true;
+                }
+                break;
             default:
                 perror("unknown message type");
                 exit(1);
         }
+        msg.str("");
         msg << "node " << id << " received: " << buf;
         Logger::getInstance().log(msg);
     }
@@ -114,7 +135,7 @@ void *Node::sender(void *arg){
     std::stringstream log_msg;
     char msg[MAX_MSG_SIZE];
     int msg_type;
-    while(true) {
+    while(!should_node_die) {
         usleep(SENDING_PERIOD * MILLISECONDS);
         if(role != NONE){                               //if I have role - sending LEADERS_MESSAGE with role
             msg_type = LEADERS_MESSAGE;

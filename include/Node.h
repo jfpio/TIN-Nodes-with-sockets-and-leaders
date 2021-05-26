@@ -22,13 +22,14 @@
 #define MILLISECONDS 1000.0
 #define LEADERS_MESSAGE 0
 #define ID_MESSAGE 1
+#define SESSION_CONTROLLER_KILL_MSG 2
 #define MSG_TYPE_POSITION 0
 #define ID_POSITION 2
 #define ROLE_POSITION 4
 #define NONE 0
 #define LEADER 1
 #define VICE_LEADER 2
-
+/// MSG:"TYPE_ID_ROLE"
 /**
  * @brief class defines initialization and other operations of the communication node
  */
@@ -41,6 +42,7 @@ private:
     struct timespec last_leader_msg_time;
     struct timespec last_vleader_msg_time;
     bool new_vleader;
+    bool should_node_die;
     mutable std::mutex vl_mutex;
     mutable std::mutex l_mutex;
     mutable std::mutex id_mutex;
