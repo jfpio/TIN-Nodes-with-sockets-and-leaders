@@ -111,6 +111,14 @@ void* SessionController::receiver(void* arg){
             setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
         } else if (atoi(buf + MSG_TYPE_POSITION) == SESSION_CONTROLLER_KILL_MSG && atoi(buf + ID_POSITION) == -1) {
             stop = true;
+        } else if (atoi(buf + MSG_TYPE_POSITION) == MORE_THAN_ONE) {
+            int role = atoi(buf + ROLE_POSITION);
+            std::lock_guard guard(nodes_mutex);
+            for (auto& node: nodes) {
+                if (node.role == role) {
+                    setRole(node.id, NONE);
+                }
+            }
         }
     }
 }

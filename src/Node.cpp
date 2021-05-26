@@ -6,6 +6,7 @@ Node::Node(int id, int role){
     this->role = role;
     this->new_vleader = false;
     this->should_node_die = false;
+    this->more_than_one_detected_ = false;
     clock_gettime(CLOCK_REALTIME, &last_leader_msg_time);
     clock_gettime(CLOCK_REALTIME, &last_vleader_msg_time);
     clock_gettime(CLOCK_REALTIME, &first_id_msg_time);
@@ -78,7 +79,7 @@ void *Node::receiver(void* arg){
                         msg << "node " << id << " informs there is more than one leader!";
                         Logger::getInstance().log(msg);
                         std::lock_guard guard(mutex_);
-                        role = NONE;
+                        more_than_one_detected_ = true;
                     } else {
                         std::lock_guard guard(mutex_);
                         clock_gettime(CLOCK_REALTIME, &last_leader_msg_time);
@@ -90,7 +91,7 @@ void *Node::receiver(void* arg){
                             msg << "node " << id << " informs there is more than one vice-leader!";
                             Logger::getInstance().log(msg);
                             std::lock_guard guard(mutex_);
-                            role = NONE;
+                            more_than_one_detected_ = true;
                         } else {
                             std::lock_guard guard(mutex_);
                             clock_gettime(CLOCK_REALTIME, &last_vleader_msg_time);
@@ -120,6 +121,13 @@ void *Node::receiver(void* arg){
                     should_node_die = true;
                 }
                 break;
+            case MORE_THAN_ONE:
+                if (atoi(buf + ROLE_POSITION) == role) {
+                    std::lock_guard guard(mutex_);
+                    std::cout << " p  " << std::endl;
+                    role = NONE;
+                }
+                break;
             default:
                 perror("unknown message type");
                 exit(1);
@@ -139,7 +147,14 @@ void *Node::sender(void *arg){
     int msg_type;
     while(!should_node_die) {
         usleep(SENDING_PERIOD * MILLISECONDS);
-        if(role != NONE){                               //if I have role - sending LEADERS_MESSAGE with role
+        if (more_than_one_detected_) {
+            std::lock_guard guard(mutex_);
+            more_than_one_detected_ = false;
+            sprintf(msg, "%d %d %d", MORE_THAN_ONE, id, role);
+            sender.send(msg, sizeof msg);
+            log_msg << "node " << id << " sent " << msg;
+            Logger::getInstance().log(log_msg);
+        } else if(role != NONE){                               //if I have role - sending LEADERS_MESSAGE with role
             msg_type = LEADERS_MESSAGE;
             sprintf(msg, "%d %d %d", msg_type, id,  role);
             sender.send(msg, sizeof msg);

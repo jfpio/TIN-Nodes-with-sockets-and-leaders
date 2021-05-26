@@ -23,6 +23,7 @@
 #define LEADERS_MESSAGE 0
 #define ID_MESSAGE 1
 #define SESSION_CONTROLLER_KILL_MSG 2
+#define MORE_THAN_ONE 3
 #define MSG_TYPE_POSITION 0
 #define ID_POSITION 2
 #define ROLE_POSITION 4
@@ -47,6 +48,7 @@ private:
     struct timespec last_vleader_msg_time;
     bool new_vleader;
     bool should_node_die;
+    bool more_than_one_detected_;
     mutable std::mutex mutex_;
 
 public:
