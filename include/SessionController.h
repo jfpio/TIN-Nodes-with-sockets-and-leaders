@@ -34,7 +34,7 @@ struct Node_info{
 class SessionController{
 private:
     std::vector<Node_info> nodes; // why not use std::map?
-    int next_id; // factory?
+    int next_id;
     std::thread rcvr_t;
     mutable std::mutex nodes_mutex;
     bool stop;

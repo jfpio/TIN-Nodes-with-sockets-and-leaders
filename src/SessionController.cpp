@@ -53,21 +53,26 @@ void SessionController::add_node(int role, const CommandLineInterface& cli){
 }
 
 void SessionController::delete_node(int id, const CommandLineInterface& cli){
-    std::stringstream msg;
+    std::stringstream log_msg;
     std::lock_guard guard(nodes_mutex);
+    char msg[MAX_MSG_SIZE];
     for(int i = 0; i < nodes.size(); i ++){
         if(nodes.at(i).id == id){
-            msg << "node " << nodes.at(i).id << " left";
-            kill(nodes.at(i).pid, SIGKILL);
+            Sender sender(sock, PORT);
+            sprintf(msg, "%d %d", SESSION_CONTROLLER_KILL_MSG, id);
+            sender.send(msg, sizeof msg);
+
+            log_msg << "node " << nodes.at(i).id << " left";
+            //kill(nodes.at(i).pid, SIGKILL);
             nodes.erase(nodes.begin() + i);
-            Logger::getInstance().log(msg);
-            msg << "Node deleted";
-            cli.display(msg);
+            Logger::getInstance().log(log_msg);
+            log_msg << "Node deleted";
+            cli.display(log_msg);
             return;
         }
     }
-    msg << "There is not a node with id = " << id;
-    cli.display(msg);
+    log_msg << "There is not a node with id = " << id;
+    cli.display(log_msg);
 }
 
 const std::vector<Node_info>& SessionController::getNodes() const
@@ -100,6 +105,8 @@ void* SessionController::receiver(void* arg){
     while(!stop){
         receiver.receive(buf, sizeof buf);
         if(atoi(buf + MSG_TYPE_POSITION) == LEADERS_MESSAGE){
+            setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
+        } else if (atoi(buf + MSG_TYPE_POSITION) == ID_MESSAGE) {
             setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
         }
     }
