@@ -10,6 +10,7 @@ SessionController::SessionController(){
     this->next_id = 0;
     this->stop = false;
     this->rcvr_t = std::thread(&SessionController::receiver, this, (void*) nullptr);
+    rcvr_t.detach();
 }
 
 SessionController::~SessionController(){}
@@ -22,7 +23,6 @@ void SessionController::cleanup() {
         Logger::getInstance().log(msg);
     }
     stop_receiver();
-    rcvr_t.join();
 }
 
 void SessionController::add_node(int role){
@@ -108,8 +108,6 @@ void* SessionController::receiver(void* arg){
     while(!stop){
         receiver.receive(buf, sizeof buf);
         if(atoi(buf + MSG_TYPE_POSITION) == LEADERS_MESSAGE){
-            setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
-        } else if (atoi(buf + MSG_TYPE_POSITION) == ID_MESSAGE) {
             setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
         } else if (atoi(buf + MSG_TYPE_POSITION) == SESSION_CONTROLLER_KILL_MSG && atoi(buf + ID_POSITION) == -1) {
             stop = true;

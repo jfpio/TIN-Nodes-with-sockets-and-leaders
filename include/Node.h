@@ -30,6 +30,10 @@
 #define LEADER 1
 #define VICE_LEADER 2
 /// MSG:"TYPE_ID_ROLE"
+/// ID_MESSAGE: ID_X
+/// LEADERS_MESSAGE: ID_ROLE
+/// SESSION_CONTROLLER_KILL_MSG: ID_X
+
 /**
  * @brief class defines initialization and other operations of the communication node
  */
