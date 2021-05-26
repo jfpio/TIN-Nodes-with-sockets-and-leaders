@@ -43,10 +43,7 @@ private:
     struct timespec last_vleader_msg_time;
     bool new_vleader;
     bool should_node_die;
-    mutable std::mutex vl_mutex;
-    mutable std::mutex l_mutex;
-    mutable std::mutex id_mutex;
-    mutable std::mutex new_vl_mutex;
+    mutable std::mutex mutex_;
 
 public:
     Node(int, int);

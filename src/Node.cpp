@@ -39,7 +39,7 @@ void Node::init(){
 bool Node::is_leader_absent() {
     std::stringstream log_msg;
     struct timespec now;
-    std::lock_guard guard(l_mutex);
+    std::lock_guard guard(mutex_);
     clock_gettime(CLOCK_REALTIME, &now);
     if((now.tv_sec + now.tv_nsec*1e-9 - last_leader_msg_time.tv_sec - last_leader_msg_time.tv_nsec*1e-9) * MILLISECONDS > MAX_WAITING_TIME){
         log_msg << "node " << id << " informs: there is not a leader";
@@ -52,7 +52,7 @@ bool Node::is_leader_absent() {
 bool Node::is_vleader_absent(){
     std::stringstream log_msg;
     struct timespec now;
-    std::lock_guard guard(vl_mutex);
+    std::lock_guard guard(mutex_);
     clock_gettime(CLOCK_REALTIME, &now);
     if((now.tv_sec + now.tv_nsec*1e-9 - last_vleader_msg_time.tv_sec - last_vleader_msg_time.tv_nsec*1e-9) * MILLISECONDS> MAX_WAITING_TIME){
         log_msg << "node " << id << " informs: there is not a vice-leader";
@@ -75,22 +75,24 @@ void *Node::receiver(void* arg){
             case LEADERS_MESSAGE:
                 if(atoi(buf + ROLE_POSITION) == LEADER){                //leader's message received
                     if (role == LEADER && atoi(buf + ID_POSITION) != id) {          //if i am a leader and got leader msg from another node
-                        role = NONE;
                         msg << "node " << id << " informs there is more than one leader!";
                         Logger::getInstance().log(msg);
+                        std::lock_guard guard(mutex_);
+                        role = NONE;
                     } else {
-                        std::lock_guard guard(l_mutex);
+                        std::lock_guard guard(mutex_);
                         clock_gettime(CLOCK_REALTIME, &last_leader_msg_time);
                     }
 
                 }else{
                     if(atoi(buf + ROLE_POSITION) == VICE_LEADER){       //vice-leader's message received
                         if (role == VICE_LEADER && atoi(buf + ID_POSITION) != id) { // if i am a leader and got leader msg from another node
-                            role = NONE;
                             msg << "node " << id << " informs there is more than one vice-leader!";
                             Logger::getInstance().log(msg);
+                            std::lock_guard guard(mutex_);
+                            role = NONE;
                         } else {
-                            std::lock_guard guard(vl_mutex);
+                            std::lock_guard guard(mutex_);
                             clock_gettime(CLOCK_REALTIME, &last_vleader_msg_time);
                         }
                     }else{
@@ -102,19 +104,19 @@ void *Node::receiver(void* arg){
             case ID_MESSAGE:                                                //id message received
                 clock_gettime(CLOCK_REALTIME, &now);
                 if((now.tv_sec + now.tv_nsec*1e-9 - first_id_msg_time.tv_sec - now.tv_nsec*1e-9) * MILLISECONDS > MAX_WAITING_TIME){
-                    std::lock_guard guard(new_vl_mutex);
-                    std::lock_guard guard2(id_mutex);
+                    std::lock_guard guard(mutex_);
                     clock_gettime(CLOCK_REALTIME, &first_id_msg_time);
                     new_vleader = true;
                 }
                 if(atoi(buf + ID_POSITION) < id) {
-                    std::lock_guard guard(new_vl_mutex);
+                    std::lock_guard guard(mutex_);
                     new_vleader = false;
                 }
                 break;
 
             case SESSION_CONTROLLER_KILL_MSG:
                 if (atoi(buf + ID_POSITION) == id) {
+                    std::lock_guard guard(mutex_);
                     should_node_die = true;
                 }
                 break;
@@ -149,9 +151,10 @@ void *Node::sender(void *arg){
         vleader_absent = is_vleader_absent();
 
         if(leader_absent && role == VICE_LEADER) {      //if leader absent and I am a vice-leader - I become a leader
-            role = LEADER;
             log_msg <<"node " << id << " is now leader";
             Logger::getInstance().log(log_msg);
+            std::lock_guard guard(mutex_);
+            role = LEADER;
         }
         if(vleader_absent && role != LEADER){          //if vice-leader absent and I am not a leader - sending ID_MESSAGE
             msg_type = ID_MESSAGE;
@@ -161,8 +164,7 @@ void *Node::sender(void *arg){
             Logger::getInstance().log(log_msg);
             struct timespec now;
             clock_gettime(CLOCK_REALTIME, &now);
-            std::lock_guard guard(id_mutex);
-            std::lock_guard guard2(new_vl_mutex);
+            std::lock_guard guard(mutex_);
             if(new_vleader && (now.tv_sec + now.tv_nsec*1e-9 - first_id_msg_time.tv_sec - first_id_msg_time.tv_nsec*1e-9) * MILLISECONDS > CHOOSING_TIME){
                 role = VICE_LEADER;
                 new_vleader = false;
