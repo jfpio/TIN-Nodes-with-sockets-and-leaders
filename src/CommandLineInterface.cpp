@@ -36,6 +36,7 @@ void CommandLineInterface::run()
                 listNodes(SessionController::getInstance().getNodes());
                 break;
             case 4:
+                SessionController::getInstance().cleanup();
                 break;
             default:
                 std::cout<<"Choose between 1-4"<<std::endl;

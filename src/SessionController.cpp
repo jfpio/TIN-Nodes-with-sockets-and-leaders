@@ -12,7 +12,9 @@ SessionController::SessionController(){
     this->rcvr_t = std::thread(&SessionController::receiver, this, (void*) nullptr);
 }
 
-SessionController::~SessionController(){
+SessionController::~SessionController(){}
+
+void SessionController::cleanup() {
     std::stringstream msg;
     for(const auto& node: nodes){
         msg << "node " << node.id << " left";

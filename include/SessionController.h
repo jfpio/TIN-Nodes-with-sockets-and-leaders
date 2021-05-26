@@ -84,6 +84,8 @@ public:
      * @param id and role to set
      */
     void setRole(int, int);
+
+    void cleanup();
 };
 
 #endif
