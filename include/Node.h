@@ -16,9 +16,13 @@
 #include "Sender.h"
 
 #define PORT 6000
+#define SENDING_PERIOD 1000
 #define MAX_WAITING_TIME 3000      //3 seconds for debugging purposes, in future 0.1 s
-#define LEADERS_MESSAGE 'a'
-#define ID_MESSAGE 'b'
+#define CHOOSING_TIME 800
+#define MILLISECONDS 1000.0
+#define LEADERS_MESSAGE 0
+#define ID_MESSAGE 1
+#define MSG_TYPE_POSITION 0
 #define ID_POSITION 2
 #define ROLE_POSITION 4
 #define NONE 0
@@ -33,10 +37,14 @@ private:
     int sock;
     int id;
     int role;
-    time_t last_leader_msg_time;
-    time_t last_v_leader_msg_time;
+    struct timespec first_id_msg_time;
+    struct timespec last_leader_msg_time;
+    struct timespec last_vleader_msg_time;
+    bool new_vleader;
     mutable std::mutex vl_mutex;
     mutable std::mutex l_mutex;
+    mutable std::mutex id_mutex;
+    mutable std::mutex new_vl_mutex;
 
 public:
     Node(int, int);
@@ -56,7 +64,7 @@ public:
      * @brief method checks if the vice-leader is absent
      * @return true if absent
      */
-    bool is_v_leader_absent();
+    bool is_vleader_absent();
 
     /**
      * @brief method receiving messages in a loop
@@ -67,11 +75,6 @@ public:
      * @brief method sends messages in a loop
      */
     void *sender(void*);
-
-    /**
-     * @brief method checks absence of leaders in a loop
-     */
-     //void *absence_checker(void*);        //is it necessary to check absence more often then sender sends messages?
 };
 
 #endif
