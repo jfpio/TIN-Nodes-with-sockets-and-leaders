@@ -99,7 +99,7 @@ void* SessionController::receiver(void* arg){
 
     while(!stop){
         receiver.receive(buf, sizeof buf);
-        if(buf[0] == LEADERS_MESSAGE){
+        if(atoi(buf + MSG_TYPE_POSITION) == LEADERS_MESSAGE){
             setRole(atoi(buf + ID_POSITION), atoi(buf + ROLE_POSITION));
         }
     }
