@@ -23,9 +23,9 @@ SessionController::~SessionController(){
     rcvr_t.join();
 }
 
-void SessionController::add_node(int role, const CommandLineInterface& cli){
+void SessionController::add_node(int role){
     if(nodes.size() == MAX_NODES) {
-        cli.display("Can't add more nodes"); // throw std::logic_error ?
+        CLI::display("Can't add more nodes"); // throw std::logic_error ?
         return;
     }
 
@@ -47,12 +47,12 @@ void SessionController::add_node(int role, const CommandLineInterface& cli){
         nodes.push_back(new_node_info);
         std::stringstream msg;
         msg << "Node with id = " << next_id << " and role " << role << " added" << std::endl;
-        cli.display(msg);
+        CLI::display(msg);
         ++next_id;
     }
 }
 
-void SessionController::delete_node(int id, const CommandLineInterface& cli){
+void SessionController::delete_node(int id){
     std::stringstream log_msg;
     std::lock_guard guard(nodes_mutex);
     char msg[MAX_MSG_SIZE];
@@ -67,12 +67,12 @@ void SessionController::delete_node(int id, const CommandLineInterface& cli){
             nodes.erase(nodes.begin() + i);
             Logger::getInstance().log(log_msg);
             log_msg << "Node deleted";
-            cli.display(log_msg);
+            CLI::display(log_msg);
             return;
         }
     }
     log_msg << "There is not a node with id = " << id;
-    cli.display(log_msg);
+    CLI::display(log_msg);
 }
 
 const std::vector<Node_info>& SessionController::getNodes() const

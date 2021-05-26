@@ -59,15 +59,15 @@ public:
 
     /**
      * @brief method adds new node
-     * @param cli
+     * @param role
      */
-    void add_node(int role, const CommandLineInterface& cli);
+    void add_node(int role);
 
     /**
      * @brief method deletes chosen node
-     * @param cli
+     * @param id
      */
-    void delete_node(int, const CommandLineInterface& cli);
+    void delete_node(int id);
 
     /**
      * @brief method receives messages in a loop

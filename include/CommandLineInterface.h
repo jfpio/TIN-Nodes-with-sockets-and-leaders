@@ -31,19 +31,21 @@ public:
     /**
      * @brief starts CLI
      */
-    void run() const;
+    static void run();
 
     /**
      * @brief lists running nodes
      * @param nodes
      */
-    void listNodes(const std::vector<Node_info>& nodes) const;
+    static void listNodes(const std::vector<Node_info>& nodes);
 
     /**
      * @brief display info for user
      * @param msg
      */
-    void display(std::stringstream& msg) const;
-    void display(const std::string& msg) const;
+    static void display(std::stringstream& msg);
+    static void display(const std::string& msg);
 };
+
+using CLI = CommandLineInterface;
 #endif //TIN_LONG_LIVE_THE_KING_COMMANDLINEINTERFACE_H

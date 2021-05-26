@@ -4,7 +4,7 @@
 
 #include "../include/CommandLineInterface.h"
 
-void CommandLineInterface::run() const
+void CommandLineInterface::run()
 {
     int choice;
     int selected_id;
@@ -24,13 +24,13 @@ void CommandLineInterface::run() const
                 std::cin >> selected_role;
                 std::cin.get();
 
-                SessionController::getInstance().add_node(selected_role, *this);
+                SessionController::getInstance().add_node(selected_role);
                 break;
             case 2:
                 std::cout << "Type node's id which you want to delete" << std::endl;
                 std::cin >> selected_id;
                 std::cin.get();
-                SessionController::getInstance().delete_node(selected_id, *this);
+                SessionController::getInstance().delete_node(selected_id);
                 break;
             case 3:
                 listNodes(SessionController::getInstance().getNodes());
@@ -55,7 +55,7 @@ void CommandLineInterface::displayOpts()
     std::cout << "4. Quit" << std::endl;
 }
 
-void CommandLineInterface::listNodes(const std::vector<Node_info> &nodes) const
+void CommandLineInterface::listNodes(const std::vector<Node_info> &nodes)
 {
     std::cout<<"------------Active nodes------------"<<std::endl;
     std::cout<<std::setw(10)<<"Id"<<std::setw(10)<<"Role"<<std::endl;
@@ -64,14 +64,14 @@ void CommandLineInterface::listNodes(const std::vector<Node_info> &nodes) const
 }
 
 
-void CommandLineInterface::display(std::stringstream &msg) const
+void CommandLineInterface::display(std::stringstream &msg)
 {
     display(msg.str());
     msg.flush();
     msg.str("");
 }
 
-void CommandLineInterface::display(const std::string &msg) const
+void CommandLineInterface::display(const std::string &msg)
 {
     std::cout << msg << std::endl;
 }
