@@ -83,6 +83,21 @@ const std::vector<Node_info>& SessionController::getNodes() const
     return nodes;
 }
 
+Node_info SessionController::getNodeById(int id)
+{
+    for(const auto& node : nodes){
+        if(node.id == id){
+            return node;
+        }
+    }
+
+    Node_info empty;
+    empty.id = -1;
+    empty.role = -1;
+
+    return empty;
+}
+
 SessionController& SessionController::getInstance() {
     static SessionController instance;
     return instance;
