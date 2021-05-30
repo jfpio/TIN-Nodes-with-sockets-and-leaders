@@ -39,6 +39,8 @@ public:
      */
     static void listNodes(const std::vector<Node_info>& nodes);
 
+    static void displayNode(Node_info node);
+
     /**
      * @brief display info for user
      * @param msg

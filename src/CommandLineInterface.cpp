@@ -36,6 +36,12 @@ void CommandLineInterface::run()
                 listNodes(SessionController::getInstance().getNodes());
                 break;
             case 4:
+                std::cout << "Type node's id" << std::endl;
+                std::cin >> selected_id;
+                std::cin.get();
+                displayNode(SessionController::getInstance().getNodeById(selected_id));
+                break;
+            case 5:
                 SessionController::getInstance().cleanup();
                 break;
             default:
@@ -43,7 +49,7 @@ void CommandLineInterface::run()
         }
 
         std::cin.get();
-    }while(choice != 4);
+    }while(choice != 5);
 }
 
 void CommandLineInterface::displayOpts()
@@ -53,7 +59,14 @@ void CommandLineInterface::displayOpts()
     std::cout << "1. Add node" << std::endl;
     std::cout << "2. Delete node" << std::endl;
     std::cout << "3. List active nodes" << std::endl;
-    std::cout << "4. Quit" << std::endl;
+    std::cout << "4. Display node role" << std::endl;
+    std::cout << "5. Quit" << std::endl;
+}
+
+void CommandLineInterface::displayNode(Node_info node)
+{
+    std::cout<<"------------Node info------------"<<std::endl;
+    std::cout << "id: " << node.id << " role: " << node.role << std::endl;
 }
 
 void CommandLineInterface::listNodes(const std::vector<Node_info> &nodes)

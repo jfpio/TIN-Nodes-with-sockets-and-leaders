@@ -58,6 +58,11 @@ public:
     const std::vector<Node_info>& getNodes() const;
 
     /**
+    * @return node's information
+    */
+    Node_info getNodeById(int id);
+
+    /**
      * @brief method adds new node
      * @param role
      */
