@@ -1,3 +1,27 @@
+# Docker
+## How to run
+
+In one command with ID=2 ROLE=1
+```
+$ docker build -t king . && docker run --network=host -it king 2 1
+```
+
+In few lines
+```shell
+$ docker build -t king .
+$ docker run network=host -it king {ID} {ROLE}
+```
+
+How to stop all docker containers:
+```shell
+$ docker stop $(docker ps -a -q)
+```
+
+How to remove all docker containers:
+```shell
+$ docker rm $(docker ps -a -q)
+```
+
 # Wireshark
 Install wireshark and grant permissions
 

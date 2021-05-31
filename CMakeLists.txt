@@ -21,7 +21,7 @@ target_link_libraries(${executable_NAME} ${project_library_NAME})
 target_link_libraries(${executable_NAME} pthread)
 target_compile_options(${executable_NAME} PRIVATE -Wall -Wextra -pedantic)
 
-option(BUILD_TESTS "Build boost tests for the project" ON)
+option(BUILD_TESTS "Build boost tests for the project" OFF)
 if(BUILD_TESTS)
     add_subdirectory(test)
 endif()

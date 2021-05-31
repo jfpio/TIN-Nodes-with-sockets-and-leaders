@@ -1,12 +1,15 @@
 #include <iostream>
 #include <fstream>
 #include "../include/SessionController.h"
+#include <cstdlib>
 
-const std::string LOG_FILE = "log.txt";
+int main(int argc, char *argv[]) {
+    if (argc >= 2) {
+        int next_id = atoi(argv[1]);
+        int role = atoi(argv[2]);
 
-int main() {
-    Logger::getInstance().setLogFile(LOG_FILE);
-    CLI::run();
-
-    return 0;
+        Node new_node(next_id, role);
+        new_node.init();
+    }
+    return -1;
 }
