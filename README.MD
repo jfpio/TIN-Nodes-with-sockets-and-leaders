@@ -1,16 +1,16 @@
 # Docker
-## How to run
+## How to run app
+with classic build debug
 
-In one command with ID=2 ROLE=1
-```
-$ docker build -t king . && docker run --network=host -it king 2 1
-```
-
-In few lines
 ```shell
-$ docker build -t king .
-$ docker run network=host -it king {ID} {ROLE}
+$ mkdir build
+$ cd build
+$ cmake ../
+$ cmake --build .
+$ ./long_live_the_king
 ```
+
+But if you want to end you have to stop and remove all containers
 
 How to stop all docker containers:
 ```shell

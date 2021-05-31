@@ -6,7 +6,7 @@ WORKDIR app
 
 RUN mkdir build; \
     cd build; \
-    cmake ../; \
+    cmake -DDOCKER=ON -DBUILD_TESTS=OFF ../; \
     cmake --build .
 
 WORKDIR /app/build
