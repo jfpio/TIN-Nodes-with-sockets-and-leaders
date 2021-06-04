@@ -4,11 +4,11 @@ COPY . /app
 RUN apt-get update && apt-get install -y g++ cmake;
 WORKDIR app
 
-RUN mkdir build; \
-    cd build; \
+RUN mkdir docker-cmake-build; \
+    cd docker-cmake-build; \
     cmake -DDOCKER=ON -DBUILD_TESTS=OFF ../; \
     cmake --build .
 
-WORKDIR /app/build
+WORKDIR /app/docker-cmake-build
 
 ENTRYPOINT ["./long_live_the_king"]
