@@ -31,28 +31,22 @@ void SessionController::add_node(int role){
         return;
     }
 
-    pid_t c_pid = fork();
-    if(c_pid < 0){
-        perror("fork error"); // throw std::runtime_error ?
-        exit(1);
-    }
+    std::string next_id_str = std::to_string(next_id);
+    std::string role_str = std::to_string(role);
 
-    if(c_pid == 0) {
-        Node new_node(next_id, role);
-        new_node.init();
-        exit(0);
-    } else{
-        struct Node_info new_node_info;
-        new_node_info.pid = c_pid;
-        new_node_info.id = next_id;
-        new_node_info.role = role;
-        std::lock_guard guard(nodes_mutex);
-        nodes.push_back(new_node_info);
-        std::stringstream msg;
-        msg << "Node with id = " << next_id << " and role " << role << " added" << std::endl;
-        CLI::display(msg);
-        ++next_id;
-    }
+    std::string line = "docker run -d --network=host -it king " + next_id_str + ' ' + role_str;
+
+    system(line.c_str());
+    struct Node_info new_node_info;
+    new_node_info.id = next_id;
+    new_node_info.role = role;
+    std::lock_guard guard(nodes_mutex);
+    nodes.push_back(new_node_info);
+    std::stringstream msg;
+    msg << "Node with id = " << next_id << " and role " << role << " added" << std::endl;
+    CLI::display(msg);
+    ++next_id;
+
 }
 
 void SessionController::delete_node(int id){

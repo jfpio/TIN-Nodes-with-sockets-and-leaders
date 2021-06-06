@@ -1,12 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include "../include/SessionController.h"
+#include <cstdlib>
 
-const std::string LOG_FILE = "log.txt";
-
-int main() {
-    Logger::getInstance().setLogFile(LOG_FILE);
+int main(int argc, char *argv[]) {
     CLI::run();
-
-    return 0;
+    return -1;
 }

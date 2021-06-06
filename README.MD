@@ -1,3 +1,27 @@
+# Docker
+## How to run app
+with classic build debug
+
+```shell
+$ mkdir build
+$ cd build
+$ cmake ../
+$ cmake --build .
+$ ./long_live_the_king
+```
+
+But if you want to end you have to stop and remove all containers
+
+How to stop all docker containers:
+```shell
+$ docker stop $(docker ps -a -q)
+```
+
+How to remove all docker containers:
+```shell
+$ docker rm $(docker ps -a -q)
+```
+
 # Wireshark
 Install wireshark and grant permissions
 
