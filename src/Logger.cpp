@@ -1,6 +1,11 @@
-//
-// Created by kamil on 10.05.2021.
-//
+/**
+ * @file logger.cpp
+ * @author Kamil Jabłonowski
+ * @brief contains logger implementation
+ * @date 10-05-2021
+ * @project long live king
+ */
+
 #include "../include/Logger.h"
 void Logger::setLogFile(const std::string& path)
 {

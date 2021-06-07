@@ -3,6 +3,7 @@
  * @author Daniel Chmielewiec
  * @brief contains definition of SessionController class
  * @date 05-05-2021
+ * @project long live king
  */
 
 #ifndef TIN_LONG_LIVE_THE_KING_SESSIONCONTROLLER_H

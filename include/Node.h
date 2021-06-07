@@ -3,6 +3,7 @@
  * @author Daniel Chmielewiec
  * @brief contains definition of Node class
  * @date 05-05-2021
+ * @project long live king
  */
 
 #ifndef TIN_LONG_LIVE_THE_KING_NODE_H

@@ -3,6 +3,7 @@
  * @author Daniel Chmielewiec
  * @brief contains definition of class Sender
  * @date 18-05-2021
+ * @project long live king
  */
 
 #ifndef TIN_LONG_LIVE_THE_KING_SENDER_H
