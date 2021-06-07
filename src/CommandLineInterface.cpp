@@ -1,7 +1,6 @@
 //
 // Created by kamil on 10.05.2021.
 //
-
 #include "../include/CommandLineInterface.h"
 
 void CommandLineInterface::run()
