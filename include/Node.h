@@ -17,8 +17,8 @@
 #include "Sender.h"
 
 #define PORT 6000
-#define SENDING_PERIOD 1000
-#define MAX_WAITING_TIME 3000      //3 seconds for debugging purposes, in future 0.1 s
+#define SENDING_PERIOD 100
+#define MAX_WAITING_TIME 1000
 #define CHOOSING_TIME 800
 #define MILLISECONDS 1000.0
 #define LEADERS_MESSAGE 0

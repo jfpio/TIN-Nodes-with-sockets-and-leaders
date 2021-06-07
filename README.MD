@@ -1,5 +1,8 @@
 # Docker
-## How to run app
+## Authors:
+Jan Piotrowski, Daniel Chmielewiec, Kamil Jabłonowski, Wojciech Moczydłowski
+
+# How to run app
 with classic build debug
 
 ```shell
@@ -10,8 +13,7 @@ $ cmake --build .
 $ ./long_live_the_king
 ```
 
-But if you want to end you have to stop and remove all containers
-
+If you quit with console that should happen automatically, but if not:
 How to stop all docker containers:
 ```shell
 $ docker stop $(docker ps -a -q)

@@ -27,6 +27,9 @@ void SessionController::cleanup() {
         Logger::getInstance().log(msg);
     }
     stop_receiver();
+
+    system("docker stop $(docker ps -a -q)");
+    system("docker rm $(docker ps -a -q)");
 }
 
 void SessionController::add_node(int role){
@@ -64,7 +67,6 @@ void SessionController::delete_node(int id){
             sender.send(msg, sizeof msg);
 
             log_msg << "node " << nodes.at(i).id << " left";
-            //kill(nodes.at(i).pid, SIGKILL);
             nodes.erase(nodes.begin() + i);
             Logger::getInstance().log(log_msg);
             log_msg << "Node deleted";
