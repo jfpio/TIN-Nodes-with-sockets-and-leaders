@@ -1,3 +1,11 @@
+/**
+ * @file CommandLineInterface.cpp
+ * @author Kamil Jabłonowski
+ * @brief contains tests configuration
+ * @date 10-05-2021
+ * @project long live king
+ */
+
 #define BOOST_TEST_MODULE "TIN_boost_test"
 #define BOOST_TEST_MAIN
 #define BOOST_TEST_DYN_LINK

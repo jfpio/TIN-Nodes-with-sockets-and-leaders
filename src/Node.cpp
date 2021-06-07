@@ -1,3 +1,11 @@
+/**
+ * @file Logger.h
+ * @author Daniel Chmielewiec
+ * @brief contains implementation of Node class
+ * @date 05-05-2021
+ * @project long live king
+ */
+
 #include "../include/Node.h"
 
 Node::Node(int id, int role){

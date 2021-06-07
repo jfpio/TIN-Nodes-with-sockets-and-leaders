@@ -3,6 +3,7 @@
  * @author Daniel Chmielewiec
  * @brief contains definition of class Receiver
  * @date 17-05-2021
+ * @project long live king
  */
 
 #ifndef TIN_LONG_LIVE_THE_KING_RECEIVER_H

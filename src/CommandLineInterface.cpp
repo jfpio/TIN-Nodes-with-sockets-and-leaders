@@ -1,6 +1,12 @@
-//
-// Created by kamil on 10.05.2021.
-//
+/**
+ * @file CommandLineInterface.cpp
+ * @author Kamil Jabłonowski
+ * @brief contains implementation of CLI class
+ * @date 10-05-2021
+ * @project long live king
+ */
+
+
 #include "../include/CommandLineInterface.h"
 
 void CommandLineInterface::run()

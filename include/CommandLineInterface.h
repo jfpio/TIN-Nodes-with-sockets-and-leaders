@@ -3,6 +3,7 @@
  * @author Kamil Jabłonowski
  * @brief contains definition of CLI class
  * @date 10-05-2021
+ * @project long live king
  */
 
 #ifndef TIN_LONG_LIVE_THE_KING_COMMANDLINEINTERFACE_H

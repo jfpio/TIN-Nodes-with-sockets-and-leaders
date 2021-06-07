@@ -1,3 +1,12 @@
+/**
+ * @file main.cpp
+ * @author Wojciech Moczydlowski
+ * @brief contains main function
+ * @date 24-04-2021
+ * @project long live king
+ */
+
+
 #include <iostream>
 #include <fstream>
 #include "../include/SessionController.h"

@@ -1,6 +1,10 @@
-//
-// Created by Daniel Chmielewiec on 05.05.2021.
-//
+/**
+ * @file SessionController.h
+ * @author Daniel Chmielewiec
+ * @brief contains implementation of SessionController class
+ * @date 05-05-2021
+ * @project long live king
+ */
 
 
 #include "../include/SessionController.h"

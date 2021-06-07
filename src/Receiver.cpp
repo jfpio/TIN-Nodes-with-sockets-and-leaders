@@ -1,3 +1,11 @@
+/**
+ * @file Receiver.h
+ * @author Daniel Chmielewiec
+ * @brief contains implementation of class Receiver
+ * @date 17-05-2021
+ * @project long live king
+ */
+
 #include "../include/Receiver.h"
 
 Receiver::Receiver(int sock, int port, struct in6_addr ip6_addr){

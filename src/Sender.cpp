@@ -1,3 +1,11 @@
+/**
+ * @file Receiver.h
+ * @author Daniel Chmielewiec
+ * @brief contains implementation of class Sender
+ * @date 17-05-2021
+ * @project long live king
+ */
+
 #include "../include/Sender.h"
 
 Sender::Sender(int sock, int port){

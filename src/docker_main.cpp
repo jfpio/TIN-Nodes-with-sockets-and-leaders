@@ -1,6 +1,11 @@
-//
-// Created by janek on 31.05.2021.
-//
+/**
+ * @file docker_main.cpp
+ * @author Jan Piotrowski
+ * @brief contains docker implementation
+ * @date 31-05-2021
+ * @project long live king
+ */
+
 
 #include <iostream>
 #include <fstream>
