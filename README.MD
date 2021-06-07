@@ -2,7 +2,7 @@
 ## Authors:
 Jan Piotrowski, Daniel Chmielewiec, Kamil Jabłonowski, Wojciech Moczydłowski
 
-## How to run app
+# How to run app
 with classic build debug
 
 ```shell
