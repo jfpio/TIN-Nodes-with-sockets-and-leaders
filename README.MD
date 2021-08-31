@@ -2,6 +2,9 @@
 ## Authors:
 Jan Piotrowski, Daniel Chmielewiec, Kamil Jabłonowski, Wojciech Moczydłowski
 
+# Documentation
+You can find documentation in Dokumentacja TIN.pdf, but unfortunately it is only in Polish.
+
 # How to run app
 with classic build debug
 
